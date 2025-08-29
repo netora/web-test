@@ -45,30 +45,17 @@
 
       <button
         id="darkmode-toggle"
+        class="theme-toggle"
         onclick="toggleDarkMode()"
-        style="
-          position: absolute;
-          right: 10px;
-          top: 10px;
-          z-index: 1150;
-          background: var(--bg-main);
-          color: var(--text-main);
-          border: 1px solid var(--text-main);
-          border-radius: 50%;
-          width: 40px;
-          height: 40px;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        "
+        aria-label="ダークモード切替"
+        title="テーマ切替"
       >
         <!-- 太陽アイコン（ライトモード用） -->
         <svg
           id="icon-sun"
           xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
+          width="28"
+          height="28"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -76,6 +63,8 @@
           stroke-linecap="round"
           stroke-linejoin="round"
           style="display: none"
+          role="img"
+          aria-hidden="true"
         >
           <circle cx="12" cy="12" r="5" />
           <line x1="12" y1="1" x2="12" y2="3" />
@@ -91,14 +80,16 @@
         <svg
           id="icon-moon"
           xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
+          width="28"
+          height="28"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
+          role="img"
+          aria-hidden="true"
         >
           <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />
         </svg>

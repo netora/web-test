@@ -659,13 +659,19 @@ a:hover,
     display: flex;
   }
 
-  /* ダークモード切替ボタンの位置調整 */
+  /* ダークモード切替ボタン（モバイル） */
   #darkmode-toggle {
-    right: 20px !important;
-    top: 20px !important;
-    width: 48px !important;
-    height: 48px !important;
-    font-size: 20px;
+    right: 14px !important;
+    top: 14px !important;
+    width: 56px !important; /* タップ領域拡大 */
+    height: 56px !important;
+    font-size: 24px; /* アイコンサイズ基準 */
+    border-width: 2px !important;
+  }
+
+  #darkmode-toggle svg {
+    width: 30px;
+    height: 30px;
   }
 
   /* サイトタイトルの調整 */
@@ -740,8 +746,10 @@ a:hover,
   }
 
   #darkmode-toggle {
-    right: 15px !important;
-    top: 15px !important;
+    right: 12px !important;
+    top: 12px !important;
+    width: 56px !important; /* 480px以下も同じサイズで視認性確保 */
+    height: 56px !important;
   }
 
   main,
@@ -965,6 +973,52 @@ footer,
   transition: background-color 0.35s ease, color 0.35s ease,
     border-color 0.35s ease, box-shadow 0.35s ease, fill 0.35s ease,
     stroke 0.35s ease;
+}
+
+/* ダークモード切替ボタン共通スタイル */
+#darkmode-toggle.theme-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1150;
+  background: transparent; /* 枠背景除去 */
+  color: var(--color-accent);
+  border: none; /* 枠線除去 */
+  border-radius: 0; /* 円形解除 */
+  width: 48px; /* タップ領域は維持 */
+  height: 48px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  box-shadow: none; /* 影除去 */
+  transition: color 0.25s ease, transform 0.2s ease;
+}
+
+#darkmode-toggle.theme-toggle:hover {
+  color: var(--color-accent-alt);
+}
+
+#darkmode-toggle.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-accent); /* キーボード操作でのみ視認可能 */
+  outline-offset: 2px;
+}
+
+[data-theme="dark"] #darkmode-toggle.theme-toggle {
+  background: transparent;
+  color: var(--color-accent-light);
+}
+
+@media (max-width: 768px) {
+  #darkmode-toggle.theme-toggle {
+    width: 56px; /* モバイルで少し広めのタップ領域 */
+    height: 56px;
+  }
+  #darkmode-toggle.theme-toggle:active {
+    transform: scale(0.92);
+  }
 }
 
 #icon-sun,
