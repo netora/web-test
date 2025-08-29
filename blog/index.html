@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hello,idea - BLOG</title>
+    <link rel="stylesheet" href="../sanitize.css" />
+    <link rel="stylesheet" href="../style.css" />
+    <script src="../darkmode.js"></script>
+    <script src="../mobile-menu.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome CDN -->
+    <link
+      href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <!-- ハンバーガーメニューボタン -->
+      <button
+        id="hamburger-btn"
+        class="hamburger-btn"
+        aria-label="メニューを開く"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <button
+        id="darkmode-toggle"
+        class="theme-toggle"
+        onclick="toggleDarkMode()"
+        aria-label="ダークモード切替"
+        title="テーマ切替"
+      >
+        <!-- 太陽アイコン（ライトモード→ダーク用） -->
+        <svg
+          id="icon-sun"
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          style="display: none"
+          role="img"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+        <!-- 月アイコン（ダークモード→ライト用） -->
+        <svg
+          id="icon-moon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          role="img"
+          aria-hidden="true"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />
+        </svg>
+      </button>
+      <h1><a href="../index.html">hello,idea</a></h1>
+      <nav id="main-nav" class="main-nav">
+        <button
+          id="menu-close-btn"
+          class="menu-close-btn"
+          aria-label="メニューを閉じる"
+        ></button>
+        <ul class="menu">
+          <li><a href="../index.html">TOP</a></li>
+          <li><a href="../about.html">ABOUT</a></li>
+          <li class="dropdown">
+            <a href="index.html">BLOG</a>
+            <ul class="dropdown-menu">
+              <li><a href="posts.html">POSTS</a></li>
+              <li><a href="#">TAGS</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main class="container">
+      <section class="hero">
+        <h2>ブログ記事一覧</h2>
+        <p>記事はまだありません。</p>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <small>&copy; 2025 hello,idea</small>
+    </footer>
+  </body>
+</html>
