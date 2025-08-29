@@ -1,3 +1,16 @@
+@media (max-width: 768px) {
+  .dropdown-menu.open {
+    display: block !important;
+  }
+}
+@media (max-width: 768px) {
+  .menu li.dropdown:hover > .dropdown-menu {
+    display: none !important;
+  }
+  .menu li.dropdown > .dropdown-menu.open {
+    display: block !important;
+  }
+}
 /* 記事一覧のリンクホバー時の文字色をアクセントカラー（オレンジ）に */
 .post-list .post-title:hover {
   color: var(--color-accent-alt);
@@ -68,29 +81,54 @@ main,
   border-radius: 12px;
 }
 
-/* .post-title のスタイルが必要ならここに記述 */
-/* ブログ記事一覧の日付部分のスタイル */
-
-.post-date {
-  color: var(--color-accent);
-  font-size: 0.98em;
-  margin-left: 0;
+.accent-alt {
+  color: var(--color-accent-alt);
+  transition: color 0.2s;
+}
+.accent-alt:hover {
+  color: #ffb86b;
 }
 
-/* 記事一覧リストのliをflex化し、日付とタイトルの間に余白 */
-.post-list > li {
+.post-list {
+  list-style: none;
+  padding: 0;
+  margin: 2em 0 0 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.post-list-item {
   display: flex;
   align-items: center;
   gap: 1.2em;
+  background: var(--color-bg-secondary);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07),
+    0 1.5px 0 var(--color-accent-light);
+  border-radius: 12px;
+  min-height: calc(100vh - 60px - 60px - 3.5rem);
+  padding: 1.1em 1.5em;
+  margin-bottom: 1.2em;
+  border-bottom: 1px solid var(--color-border);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.post-list-item:last-child {
+  border-bottom: none;
+}
+.post-list-item:hover {
+  box-shadow: 0 4px 24px rgba(33, 150, 243, 0.13), 0 2px 0 var(--color-accent);
+  transform: translateY(-2px) scale(1.01);
 }
 
-/* 記事一覧リストの行頭の●を消す */
-.post-list,
-.post-list-item {
-  list-style: none;
-  padding-left: 0;
-  margin-left: 0;
+.post-date {
+  color: var(--color-accent-light);
+  font-size: 0.98em;
+  min-width: 7.5em;
+  font-family: "Noto Serif JP", serif;
+  letter-spacing: 0.04em;
+  margin-right: 2.5em;
 }
+
+/* .post-title のスタイルが必要ならここに記述 */
 /* 旧ダークモード用スタイルは削除 */
 .menu a:focus {
   outline: none;
@@ -317,8 +355,8 @@ header {
   width: 60%;
   background: var(--color-accent);
   border-radius: 1px;
-  opacity: 0 !important;
-  transform: scaleX(0) !important;
+  opacity: 0;
+  transform: scaleX(0);
   transition: opacity 0.5s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
 }
@@ -326,7 +364,7 @@ header {
 .dropdown-menu a:focus::after {
   opacity: 0 !important;
   transform: scaleX(0) !important;
-  transform-origin: left;
+  /* 子メニューのホバー時は下線を非表示 */
 }
 .dropdown-menu a::before {
   display: none;
@@ -776,7 +814,10 @@ a:hover,
 
 .menu-close-btn .close-symbol {
   margin-right: 0.3em;
-  font-weight: bold;
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
 }
 
 .menu-close-btn .close-text {
@@ -817,6 +858,10 @@ a:hover,
 
   .main-nav.show {
     left: 0;
+  }
+
+  .menu-close-btn {
+    display: flex;
   }
 
   .main-nav .menu {

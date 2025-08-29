@@ -2,6 +2,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   const hamburgerBtn = document.getElementById("hamburger-btn");
   const mainNav = document.getElementById("main-nav");
+  const closeSymbol = document.querySelector("#menu-close-btn .close-symbol");
 
   // ハンバーガーボタンクリック
   hamburgerBtn.addEventListener("click", function () {
