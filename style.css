@@ -363,8 +363,7 @@ header {
 .dropdown-menu a:hover::after,
 .dropdown-menu a:focus::after {
   opacity: 0 !important;
-  transform: scaleX(0) !important;
-  /* 子メニューのホバー時は下線を非表示 */
+  transform: scaleX(0) !important; /* 子メニューのホバー時は下線を非表示 */
 }
 .dropdown-menu a::before {
   display: none;
@@ -941,5 +940,61 @@ a:hover,
     background: transparent;
     box-shadow: none;
     padding: 0;
+  }
+}
+
+/* ===============================
+   ダーク/ライトテーマ切替のスムーズ化
+   =============================== */
+html,
+body,
+main,
+.container,
+header,
+footer,
+.site-footer,
+.post-list-item,
+.dropdown-menu,
+.mobile-menu,
+.mobile-menu a,
+.hamburger-menu,
+.mobile-menu-overlay,
+.menu a,
+.main-nav,
+.menu-close-btn {
+  transition: background-color 0.35s ease, color 0.35s ease,
+    border-color 0.35s ease, box-shadow 0.35s ease, fill 0.35s ease,
+    stroke 0.35s ease;
+}
+
+#icon-sun,
+#icon-moon {
+  transition: fill 0.35s ease, stroke 0.35s ease, opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.theme-no-transition *,
+.theme-no-transition {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body,
+  main,
+  .container,
+  header,
+  footer,
+  .site-footer,
+  .post-list-item,
+  .dropdown-menu,
+  .mobile-menu,
+  .mobile-menu a,
+  .hamburger-menu,
+  .mobile-menu-overlay,
+  .menu a,
+  .main-nav,
+  .menu-close-btn {
+    transition: none !important;
   }
 }
