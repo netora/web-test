@@ -1,25 +1,23 @@
+/* =====================================================
+  01. モバイルドロップダウン（JS の .open クラス制御のみ）
+  ===================================================== */
 @media (max-width: 768px) {
-  .dropdown-menu.open {
-    display: block !important;
-  }
-}
-@media (max-width: 768px) {
-  .menu li.dropdown:hover > .dropdown-menu {
-    display: none !important;
-  }
   .menu li.dropdown > .dropdown-menu.open {
-    display: block !important;
+    display: block;
   }
 }
-/* 記事一覧のリンクホバー時の文字色をアクセントカラー（オレンジ）に */
+/* =====================================================
+  02. 記事一覧タイトルのホバー時アクセント色
+  ===================================================== */
 .post-list .post-title:hover {
   color: var(--color-accent-alt);
 }
-/* 記事一覧のリンクホバー時の文字色をアクセントカラー（オレンジ）に */
 .post-list-item a:hover {
   color: var(--color-accent-alt);
 }
-/* 太陽アイコンをオレンジ、月アイコンを黄色で塗りつぶし */
+/* =====================================================
+  03. テーマ切替アイコンの基本色
+  ===================================================== */
 #icon-sun {
   fill: #ff9800;
   stroke: #ff9800;
@@ -52,7 +50,7 @@ body {
 
 main,
 .container {
-  width: 900px;
+  width: 100%;
   max-width: 900px;
   margin: 2rem auto 0 auto;
   padding: 2.5rem 1.2rem;
@@ -66,8 +64,9 @@ main,
   transition: box-shadow 0.3s, background 0.3s;
   margin-bottom: 3.5rem;
 }
-[data-theme="dark"] html,
-[data-theme="dark"] body,
+[data-theme="dark"] body {
+  background: var(--color-bg);
+}
 [data-theme="dark"] main,
 [data-theme="dark"] .container,
 [data-theme="dark"] footer,
@@ -105,7 +104,6 @@ main,
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07),
     0 1.5px 0 var(--color-accent-light);
   border-radius: 12px;
-  min-height: calc(100vh - 60px - 60px - 3.5rem);
   padding: 1.1em 1.5em;
   margin-bottom: 1.2em;
   border-bottom: 1px solid var(--color-border);
@@ -115,8 +113,8 @@ main,
   border-bottom: none;
 }
 .post-list-item:hover {
-  box-shadow: 0 4px 24px rgba(33, 150, 243, 0.13), 0 2px 0 var(--color-accent);
-  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 3px 18px rgba(33, 150, 243, 0.12), 0 2px 0 var(--color-accent);
+  transform: translateY(-2px);
 }
 
 .post-date {
@@ -128,38 +126,85 @@ main,
   margin-right: 2.5em;
 }
 
-/* .post-title のスタイルが必要ならここに記述 */
-/* 旧ダークモード用スタイルは削除 */
-.menu a:focus {
-  outline: none;
-}
+/* 旧ダークモード用の不要コメント整理 */
 /* カラーテーマ変数 */
+/* アクセントカラーをAA達成のため濃く (#2563eb→#1d4ed8) 調整 */
+/* アクセントカラーをAA達成のため濃く (#2563eb→#1d4ed8) 調整 */
+/* -----------------------------------------------------
+  カラートークン使用ガイド (アクセシビリティ方針)
+  - --color-accent       : 標準リンク / 強調テキスト (本文で使用可) WCAG AA 達成
+  - --color-accent-hover : ホバー / フォーカス時の視認性向上 (下線と併用)
+  - --color-accent-light : 装飾的ライン / ボーダー / セパレータ 等 (十分なコントラストがある用途に限定)
+  - --color-accent-alt   : 装飾専用の暖色 (約2:1 程度で本文コントラスト不足のため「通常テキスト色」や
+                           「リンク本体色」には使用しない。利用例: アイコン fill, 小さなバッジ背景,
+                           強調ライン, グラデーションの一部。文字に使う場合は 18pt 以上太字など
+                           大きな表示で且つ意味が他手段でも伝わる状況に限定)
+  運用ルール:
+    * a, p, li など本文要素で color: var(--color-accent-alt) を直接指定しない
+    * テキスト強調は color-accent + 下線 / 太字の形態的手がかりを併用
+    * 代替不能な情報伝達に色相 (accent-alt) のみを使わない (情報冗長化)
+  * --color-fg-on-accent は --color-accent 背景専用。bg / bg_secondary 上では使用しない
+  * AAA 必須の本文リンクが必要な稀なケースでは --color-accent-aaa を検討 (ブランド差異に注意)
+  * 変更時は contrast_report.html の自動抽出で同期 (手動更新不要)
+----------------------------------------------------- */
 :root {
   --color-bg: #f7f8fa;
   --color-bg-secondary: #e3e7ef;
   --color-text: #222b38;
-  --color-accent: #2563eb;
-  --color-accent-light: #3b82f6;
-  --color-accent-alt: #ff9800;
+  --color-accent: #1d4ed8; /* 通常リンク/強調 (AA達成) */
+  --color-accent-light: #3b82f6; /* 既存の軽い青 (装飾/特殊用途) */
+  --color-accent-hover: #1443c3; /* ホバー用（若干暗くしコントラスト差と視認性向上） */
+  --color-accent-alt: #ff9800; /* 装飾専用 (文字色利用は避ける) */
+  --color-fg-on-accent: #ffffff; /* アクセント背景用前景 (ライト) */
+  /* AAA 用 (通常本文で AAA 必須箇所向け代替リンク色) */
+  --color-accent-aaa: #153aa8; /* #1d4ed8 より暗く 7:1 目標 */
+  --color-accent-aaa-hover: #112f8e;
   --color-border: #d1d5db;
+  /* UI要素用追加トークン (テキストコントラスト AA 満たす組合せ) */
+  --color-btn-primary-bg: #1d4ed8; /* ブランド主要ボタン背景 */
+  --color-btn-primary-bg-hover: #1443c3; /* ホバー/フォーカス */
+  --color-btn-primary-text: #ffffff; /* 対象背景で 6:1 以上 */
+  --color-btn-outline-border: #1d4ed8;
+  --color-btn-outline-text: #1d4ed8;
+  --color-btn-outline-hover-bg: rgba(29, 78, 216, 0.1);
+  --color-badge-info-bg: #1d4ed8; /* 情報/既定 */
+  --color-badge-warn-bg: #92400e; /* 警告 (白文字で 4.7:1+) */
+  --color-badge-neutral-bg: #4b5563; /* 中立 */
+  --color-badge-text: #ffffff;
 }
 
+/* ダークテーマ: 通常リンクを高コントラスト (#60a5fa) に、ホバーでさらに淡色 (#8abfff) */
+/* ダークテーマ: 通常リンクを高コントラスト (#60a5fa) に、ホバーでさらに淡色 (#8abfff) */
 [data-theme="dark"] {
   --color-bg: #181c20;
   --color-bg-secondary: #232a33;
   --color-text: #e5eaf3;
-  --color-accent: #3b82f6;
-  --color-accent-light: #60a5fa;
-  --color-accent-alt: #ffb74d;
+  --color-accent: #60a5fa; /* 通常リンク (AA) */
+  --color-accent-light: #8abfff; /* 装飾・従来用途 */
+  --color-accent-hover: #8abfff; /* ホバー: 明度差で可視性 */
+  --color-accent-alt: #ffa733; /* 装飾専用 */
+  --color-fg-on-accent: #0f1b2e; /* 明るい accent 背景上で高コントラストの前景 */
+  --color-accent-aaa: #6fb5ff; /* 標準 accent (#60a5fa) よりやや明るく 7:1 到達を狙う */
+  --color-accent-aaa-hover: #82c0ff;
   --color-border: #374151;
+  /* ダークテーマ用ボタン/バッジ (背景は暗部でのコントラスト確保のため若干彩度高め) */
+  --color-btn-primary-bg: #1d4ed8;
+  --color-btn-primary-bg-hover: #1443c3;
+  --color-btn-primary-text: #ffffff;
+  --color-btn-outline-border: #60a5fa;
+  --color-btn-outline-text: #60a5fa;
+  --color-btn-outline-hover-bg: rgba(96, 165, 250, 0.15);
+  --color-badge-info-bg: #1d4ed8;
+  --color-badge-warn-bg: #92400e;
+  --color-badge-neutral-bg: #475569;
+  --color-badge-text: #ffffff;
 }
 
 [data-theme="dark"] body {
   background: var(--color-bg-secondary);
 }
 
-/* 旧変数・未使用変数は削除済み */
-/* サイト全体のリセットとベース */
+/* ベース要素初期化 */
 html,
 body {
   height: 100%;
@@ -175,24 +220,7 @@ footer {
   padding: 10px 30px;
 }
 
-.site-header h1,
-header h1 {
-  margin: 0 0 2.2rem 0;
-  font-size: 2rem;
-  text-align: center;
-  font-family: "Lora", serif;
-  font-weight: 900;
-  letter-spacing: 0.09em;
-  color: var(--color-accent);
-  text-shadow: 0 2px 8px rgba(255, 152, 0, 0.12), 0 1px 0 #fff;
-  line-height: 1.1;
-}
-
-/* ダークモード時のサイトタイトルのtext-shadowを調整 */
-[data-theme="dark"] .site-header h1,
-[data-theme="dark"] header h1 {
-  text-shadow: 0 2px 8px rgba(255, 152, 0, 0.12), 0 1px 0 #222;
-}
+/* h1 初期分散定義関連コメント整理 */
 
 header {
   background: var(--color-bg);
@@ -239,7 +267,6 @@ header {
   color: var(--color-accent);
 }
 
-/* キーボード操作時のみフォーカス枠を表示 */
 .menu a:focus {
   outline: none;
 }
@@ -248,7 +275,6 @@ header {
   outline-offset: 2px;
 }
 /* メニューのホバー時、背景色は変えない */
-/* メニューのホバー時、背景色を絶対に変えない */
 .menu a:hover {
   color: var(--color-accent-alt);
   background: none;
@@ -341,49 +367,27 @@ header {
   background: transparent;
   color: var(--color-accent-alt);
 }
-.menu li.dropdown:hover > .dropdown-menu {
-  display: block;
+/* PC幅のみ hover で子メニュー表示 */
+@media (min-width: 769px) {
+  .menu li.dropdown:hover > .dropdown-menu {
+    display: block;
+  }
 }
-/* 子メニューは下線アニメーション完全無効 */
+/* 子メニューは下線装飾を使用しない */
+.dropdown-menu a::before,
 .dropdown-menu a::after {
-  content: "";
-  position: absolute;
-  left: 20%;
-  right: 20%;
-  bottom: 6px;
-  height: 2px;
-  width: 60%;
-  background: var(--color-accent);
-  border-radius: 1px;
-  opacity: 0;
-  transform: scaleX(0);
-  transition: opacity 0.5s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1;
+  content: none;
 }
-.dropdown-menu a:hover::after,
-.dropdown-menu a:focus::after {
-  opacity: 0 !important;
-  transform: scaleX(0) !important; /* 子メニューのホバー時は下線を非表示 */
-}
-.dropdown-menu a::before {
+
+/* ハンバーガーメニュー展開時は上下線アニメーションを非表示 */
+.main-nav.show .menu > li > a::before,
+.main-nav.show .menu > li > a::after {
   display: none;
 }
 
-/* ハンバーガーメニュー（main-nav.show時）は上下線アニメーションを非表示にする */
-.main-nav.show .menu > li > a::before,
-.main-nav.show .menu > li > a::after {
-  display: none !important;
-}
-
-/* 本文要素も左寄せ */
-
+/* 本文要素左寄せ */
 p,
 section,
-article {
-  text-align: left;
-}
-
-p,
 article {
   text-align: left;
 }
@@ -459,18 +463,18 @@ footer::before,
   border-radius: 1px;
 }
 
-/* 1. メニューのコントラスト改善 */
-
-/* 3,6. サイトタイトルの余白・階層・アクセント強調 */
+/* =====================================================
+  07. サイトタイトル（レスポンシブ統合定義）
+  ===================================================== */
 .site-header h1,
 header h1 {
-  margin: 0 0 2.8rem 0;
-  font-size: 2.5rem;
+  margin: 0 0 2.6rem 0;
+  font-size: clamp(1.9rem, 4vw, 2.5rem);
   text-align: center;
   font-family: "Lora", serif;
   font-weight: 900;
   letter-spacing: 0.09em;
-  color: var(--color-accent) !important;
+  color: var(--color-accent);
   text-shadow: 0 2px 8px rgba(255, 152, 0, 0.18), 0 1px 0 #fff;
   line-height: 1.1;
 }
@@ -487,160 +491,26 @@ footer,
   position: relative;
 }
 
-/* 5. アクセントカラーを小要素にも活用 */
-a,
+/* リンク / 強調（アクセシビリティ対応） */
 a,
 .accent {
   color: var(--color-accent);
-  transition: color 0.2s;
+  transition: color 0.18s;
+  text-decoration: none;
 }
+/* ホバー時: 単なる色変更へ依存せず下線も付与 (SC 1.4.1 対応を強化) */
 a:hover,
 .accent:hover {
-  color: var(--color-accent-light);
+  color: var(--color-accent-hover);
+  text-decoration: underline;
 }
-
-/* ハンバーガーメニューの基本スタイル */
-.hamburger-menu {
-  display: none;
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  z-index: 1000;
-  background: var(--color-bg);
-  border: 2px solid var(--color-accent);
-  border-radius: 8px;
-  width: 48px;
-  height: 48px;
-  cursor: pointer;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  transition: all 0.3s ease;
+a:focus-visible {
+  outline: 2px solid var(--color-accent-light);
+  outline-offset: 2px;
+  text-decoration: underline;
 }
-
-.hamburger-menu:hover {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-}
-
-.hamburger-menu span {
-  display: block;
-  width: 24px;
-  height: 3px;
-  background: var(--color-accent);
-  margin: 3px 0;
-  transition: all 0.3s ease;
-  border-radius: 2px;
-}
-
-.hamburger-menu:hover span {
-  background: var(--color-bg);
-}
-
-.hamburger-menu.active span:nth-child(1) {
-  transform: rotate(45deg) translate(6px, 6px);
-}
-
-.hamburger-menu.active span:nth-child(2) {
-  opacity: 0;
-}
-
-.hamburger-menu.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(6px, -6px);
-}
-
-/* モバイルメニューのオーバーレイ */
-.mobile-menu-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.mobile-menu-overlay.active {
-  opacity: 1;
-}
-
-/* モバイルメニューコンテナ */
-.mobile-menu {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: var(--color-bg);
-  z-index: 1001;
-  transform: translateY(-100%);
-  transition: transform 0.3s ease;
-  border-bottom: 3px solid var(--color-accent);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  min-height: 300px;
-  max-height: 100vh;
-  overflow-y: auto;
-}
-
-.mobile-menu.active {
-  transform: translateY(0);
-}
-
-.mobile-menu ul {
-  list-style: none;
-  padding: 80px 20px 30px 20px;
-  margin: 0;
-  background: var(--color-bg);
-  min-height: 200px;
-  display: block;
-}
-
-.mobile-menu li {
-  margin-bottom: 8px;
-  display: block;
-  width: 100%;
-}
-
-.mobile-menu a {
-  display: block !important;
-  height: 56px;
-  line-height: 56px;
-  padding: 0 20px;
-  color: var(--color-accent) !important;
-  text-decoration: none;
-  font-size: 18px;
-  font-family: "Noto Serif JP", serif;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  width: 100%;
-  box-sizing: border-box;
-  background: var(--color-bg-secondary);
-  border: 2px solid transparent;
-  font-weight: 500;
-  text-align: left;
-}
-
-.mobile-menu a:hover,
-.mobile-menu a:focus {
-  background: var(--color-accent) !important;
-  color: var(--color-bg) !important;
-  border-color: var(--color-accent-alt);
-}
-
-[data-theme="dark"] .mobile-menu {
-  background: var(--color-bg);
-}
-
-[data-theme="dark"] .mobile-menu ul {
-  background: var(--color-bg);
-}
-
-[data-theme="dark"] .mobile-menu a {
-  color: var(--color-accent) !important;
-  background: var(--color-bg-secondary);
+a:visited {
+  color: var(--color-accent);
 }
 
 @media (max-width: 768px) {
@@ -661,12 +531,12 @@ a:hover,
 
   /* ダークモード切替ボタン（モバイル） */
   #darkmode-toggle {
-    right: 14px !important;
-    top: 14px !important;
-    width: 56px !important; /* タップ領域拡大 */
-    height: 56px !important;
+    right: 14px;
+    top: 14px;
+    width: 56px; /* タップ領域拡大 */
+    height: 56px;
     font-size: 24px; /* アイコンサイズ基準 */
-    border-width: 2px !important;
+    border-width: 2px;
   }
 
   #darkmode-toggle svg {
@@ -691,7 +561,7 @@ a:hover,
     max-width: none;
   }
 
-  /* フォントサイズを16px以上に調整 */
+  /* モバイルでの本文最小フォントサイズ確保 */
   body {
     font-size: 16px;
     line-height: 1.6;
@@ -720,15 +590,9 @@ a:hover,
 
   /* タッチ領域の確保 */
   button,
-  .menu a,
-  .mobile-menu a {
+  .menu a {
     min-height: 48px;
     min-width: 48px;
-  }
-
-  /* JSでdisplay:block;が付与された場合は強制的に表示 */
-  .main-nav .dropdown-menu[style*="display: block"] {
-    display: block !important;
   }
 }
 
@@ -746,10 +610,10 @@ a:hover,
   }
 
   #darkmode-toggle {
-    right: 12px !important;
-    top: 12px !important;
-    width: 56px !important; /* 480px以下も同じサイズで視認性確保 */
-    height: 56px !important;
+    right: 12px;
+    top: 12px;
+    width: 56px; /* 480px以下も同じサイズで視認性確保 */
+    height: 56px;
   }
 
   main,
@@ -758,7 +622,7 @@ a:hover,
   }
 }
 
-/* ハンバーガーメニューのスタイル */
+/* ハンバーガーメニュー */
 .hamburger-btn {
   display: none;
   position: fixed;
@@ -961,18 +825,11 @@ main,
 header,
 footer,
 .site-footer,
-.post-list-item,
 .dropdown-menu,
-.mobile-menu,
-.mobile-menu a,
-.hamburger-menu,
-.mobile-menu-overlay,
 .menu a,
-.main-nav,
-.menu-close-btn {
-  transition: background-color 0.35s ease, color 0.35s ease,
-    border-color 0.35s ease, box-shadow 0.35s ease, fill 0.35s ease,
-    stroke 0.35s ease;
+.main-nav {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease, transform 0.25s ease;
 }
 
 /* ダークモード切替ボタン共通スタイル */
@@ -1023,15 +880,13 @@ footer,
 
 #icon-sun,
 #icon-moon {
-  transition: fill 0.35s ease, stroke 0.35s ease, opacity 0.35s ease,
-    transform 0.35s ease;
+  transition: fill 0.3s ease, stroke 0.3s ease, opacity 0.3s ease,
+    transform 0.3s ease;
 }
-
-.theme-no-transition *,
-.theme-no-transition {
+body.theme-no-transition,
+body.theme-no-transition * {
   transition: none !important;
 }
-
 @media (prefers-reduced-motion: reduce) {
   html,
   body,
@@ -1040,15 +895,129 @@ footer,
   header,
   footer,
   .site-footer,
-  .post-list-item,
   .dropdown-menu,
-  .mobile-menu,
-  .mobile-menu a,
-  .hamburger-menu,
-  .mobile-menu-overlay,
   .menu a,
-  .main-nav,
-  .menu-close-btn {
+  .main-nav {
     transition: none !important;
   }
+}
+
+/* ===============================
+   ボタン / バッジ (デザインシステム導入)
+   - .btn--primary: 主要アクション。背景=--color-btn-primary-bg 白文字
+   - .btn--outline: 低強度アクション。透明背景 + 枠線
+   - .badge--(info|warn|neutral): 短いラベル表示 (テキストは極力1〜2語)
+   アクセシビリティ:
+     * フォーカスは :focus-visible で 2px アウトライン
+     * カラーのみで意味を伝えない (アイコン/テキスト併用想定)
+================================ */
+.btn {
+  --_pad-y: 0.65em;
+  --_pad-x: 1.1em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  font-size: 0.95rem;
+  border-radius: 0.55em;
+  padding: var(--_pad-y) var(--_pad-x);
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: background-color 0.22s, color 0.22s, border-color 0.22s,
+    box-shadow 0.22s, transform 0.15s;
+  position: relative;
+}
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent-light);
+  outline-offset: 2px;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+
+/* Primary */
+.btn--primary {
+  background: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-text);
+  border-color: var(--color-btn-primary-bg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+}
+.btn--primary:hover,
+.btn--primary:focus-visible {
+  background: var(--color-btn-primary-bg-hover);
+  border-color: var(--color-btn-primary-bg-hover);
+  color: var(--color-btn-primary-text);
+}
+.btn--primary:active {
+  background: var(--color-btn-primary-bg-hover);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) inset;
+}
+
+/* Outline */
+.btn--outline {
+  background: transparent;
+  color: var(--color-btn-outline-text);
+  border-color: var(--color-btn-outline-border);
+}
+.btn--outline:hover,
+.btn--outline:focus-visible {
+  background: var(--color-btn-outline-hover-bg);
+}
+.btn--outline:active {
+  background: var(--color-btn-outline-hover-bg);
+  box-shadow: 0 0 0 1px var(--color-btn-outline-border) inset;
+}
+
+/* Disabled (aria-disabled="true" or .is-disabled) */
+.btn[aria-disabled="true"],
+.btn.is-disabled,
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.6em 0.3em;
+  border-radius: 0.75em;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  user-select: none;
+}
+.badge--info {
+  background: var(--color-badge-info-bg);
+  color: var(--color-badge-text);
+}
+.badge--warn {
+  background: var(--color-badge-warn-bg);
+  color: var(--color-badge-text);
+}
+.badge--neutral {
+  background: var(--color-badge-neutral-bg);
+  color: var(--color-badge-text);
+}
+
+/* クリック可能バッジ (link / button 併用) */
+a.badge,
+button.badge {
+  text-decoration: none;
+  cursor: pointer;
+}
+a.badge:focus-visible,
+button.badge:focus-visible {
+  outline: 2px solid var(--color-accent-light);
+  outline-offset: 2px;
 }

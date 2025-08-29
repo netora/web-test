@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <title>WCAG コントラストレポート</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <!-- style.css を直接読み込み → カスタムプロパティを動的に取得して単一ソース化 -->
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      :root {
+        --font-stack: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, "Noto Sans JP", "Helvetica Neue", Arial, sans-serif;
+      }
+      body {
+        font-family: var(--font-stack);
+        margin: 1.5rem;
+      }
+      h1 {
+        font-size: 1.6rem;
+        margin: 0 0 1rem 0;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.9rem;
+      }
+      th,
+      td {
+        padding: 0.45rem 0.6rem;
+        border: 1px solid #ccc;
+        text-align: left;
+      }
+      th {
+        background: #e3e7ef;
+        position: sticky;
+        top: 0;
+      }
+      .swatch {
+        display: inline-block;
+        width: 2.2em;
+        height: 1.2em;
+        border: 1px solid #888;
+        margin-right: 0.4em;
+        vertical-align: middle;
+      }
+      .ratio {
+        font-weight: 600;
+      }
+      .pass-aa {
+        background: #e0f7ec;
+      }
+      .pass-aa-large {
+        background: #fff8e1;
+      }
+      .pass-aaa {
+        background: #dbeafe;
+      }
+      .fail {
+        background: #ffe5e5;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin: 0 0 1rem;
+      }
+      button,
+      select {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+      }
+      .tag {
+        display: inline-block;
+        padding: 0.15rem 0.45rem;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        margin-right: 0.25rem;
+      }
+      .AAA {
+        background: #1e3a8a;
+        color: #fff;
+      }
+      .AA {
+        background: #065f46;
+        color: #fff;
+      }
+      .AA-large {
+        background: #92400e;
+        color: #fff;
+      }
+      .Fail {
+        background: #991b1b;
+        color: #fff;
+      }
+      details {
+        margin: 0.6rem 0 1rem;
+      }
+      .muted {
+        color: #555;
+        font-size: 0.75rem;
+      }
+      .small {
+        font-size: 0.7rem;
+      }
+      tbody tr.highlight {
+        outline: 2px solid #222b38;
+      }
+      .theme-toggle {
+        margin-left: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      WCAG コントラストレポート
+      <span class="small" id="theme-indicator">(light)</span>
+    </h1>
+    <div class="controls">
+      <button id="toggle-theme" class="theme-toggle">テーマ切替</button>
+      <select id="filter">
+        <option value="all">すべて表示</option>
+        <option value="fail">Fail のみ</option>
+        <option value="aa-miss">通常AA未達 (4.5未満) を表示</option>
+        <option value="aa-pass">AA 以上</option>
+        <option value="aaa">AAA のみ</option>
+      </select>
+      <button id="sort-worst">悪い順に並べ替え</button>
+      <button id="sort-best">良い順に並べ替え</button>
+      <button id="recalc">再計算</button>
+    </div>
+    <details open>
+      <summary>凡例 / 判定基準</summary>
+      <div class="muted">
+        通常テキスト: 4.5+ = AA, 7.0+ = AAA / 大きな文字(18pt 以上 or 14pt
+        太字): 3.0+ = AA / ここでは太字・サイズ不定のため「AA-large」で区別。<br />accent_alt
+        は装飾目的（下線/アイコン/バッジ背景など）で本文色として単独使用しない。
+      </div>
+    </details>
+    <table id="report">
+      <thead>
+        <tr>
+          <th>テーマ</th>
+          <th>組み合わせ</th>
+          <th>前景</th>
+          <th>背景</th>
+          <th>比 (contrast)</th>
+          <th>判定</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <script>
+      // =====================================================
+      // style.css の --color-* カスタムプロパティを自動抽出しライト/ダーク両テーマで計測
+      // 単一ソース管理: 色変更は style.css だけ更新すれば本レポートも同期
+      // =====================================================
+      const foregroundKeys = [
+        "text",
+        "accent",
+        "accent_light",
+        "accent_hover",
+        "accent_alt",
+        // fg-on-accent はアクセント背景専用なので通常背景とは組み合わせない
+      ]; // 前景候補 (fg-on-accent は除外)
+      const backgroundKeys = ["bg", "bg_secondary"]; // 背景候補
+      const inverseBackgrounds = ["accent", "accent_light", "accent_alt"]; // 逆配色 (text on accent 系)
+      const accentBackgroundsForOnAccent = ["accent"]; // fg-on-accent 前景で検証する背景
+      const accentAAAComparisons = ["accent-aaa"]; // AAA 代替リンク色の比較 (bg 上)
+
+      async function extractColorVarNames() {
+        try {
+          const res = await fetch("style.css", { cache: "no-cache" });
+          const css = await res.text();
+          const set = new Set();
+          const re = /--color-[a-z0-9-]+\s*:/gi;
+          let m;
+          while ((m = re.exec(css))) {
+            set.add(m[0].split(":")[0].trim());
+          }
+          return [...set];
+        } catch (e) {
+          console.warn("CSS変数抽出失敗 フォールバック", e);
+          return [
+            "--color-bg",
+            "--color-bg-secondary",
+            "--color-text",
+            "--color-accent",
+            "--color-accent-light",
+            "--color-accent-hover",
+            "--color-accent-alt",
+          ];
+        }
+      }
+      function readPalette(theme, varNames) {
+        const html = document.documentElement;
+        const prev = html.getAttribute("data-theme");
+        html.setAttribute("data-theme", theme === "dark" ? "dark" : "light");
+        const cs = getComputedStyle(html);
+        const map = {};
+        varNames.forEach((v) => {
+          const val = cs.getPropertyValue(v).trim();
+          if (val) map[v.replace(/^--color-/, "")] = val;
+        });
+        if (prev) html.setAttribute("data-theme", prev);
+        else html.removeAttribute("data-theme");
+        return map;
+      }
+      async function buildPalettes() {
+        const vars = await extractColorVarNames();
+        return {
+          light: readPalette("light", vars),
+          dark: readPalette("dark", vars),
+        };
+      }
+      function hexToRgb(h) {
+        h = h.replace("#", "");
+        return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+      }
+      function lin(c) {
+        return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+      }
+      function luminance(h) {
+        const [r, g, b] = hexToRgb(h);
+        return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+      }
+      function contrast(a, b) {
+        const l1 = luminance(a),
+          l2 = luminance(b);
+        const [hi, lo] = l1 > l2 ? [l1, l2] : [l2, l1];
+        return (hi + 0.05) / (lo + 0.05);
+      }
+      function classify(r) {
+        if (r >= 7) return { label: "AAA", cls: "pass-aaa" };
+        if (r >= 4.5) return { label: "AA", cls: "pass-aa" };
+        if (r >= 3) return { label: "AA-large", cls: "pass-aa-large" };
+        return { label: "Fail", cls: "fail" };
+      }
+      function buildRows(theme, pals) {
+        const p = pals[theme];
+        if (!p) return [];
+        const rows = [];
+        foregroundKeys.forEach((fg) => {
+          if (!(fg in p)) return;
+          backgroundKeys.forEach((bg) => {
+            if (!(bg in p)) return;
+            const ratio = contrast(p[fg], p[bg]);
+            rows.push({
+              theme,
+              pair: `${fg} on ${bg}`,
+              fg: p[fg],
+              bg: p[bg],
+              ratio,
+            });
+          });
+        });
+        // 通常 text をアクセント背景に載せる (Fail 可視化)
+        inverseBackgrounds.forEach((bg) => {
+          if (!(bg in p) || !("text" in p)) return;
+          const ratio = contrast(p.text, p[bg]);
+          rows.push({
+            theme,
+            pair: `text on ${bg}`,
+            fg: p.text,
+            bg: p[bg],
+            ratio,
+            inverse: true,
+          });
+        });
+        // fg-on-accent トークン検証 (推奨アクセント背景用前景)
+        accentBackgroundsForOnAccent.forEach((bg) => {
+          if (!("fg-on-accent" in p) || !(bg in p)) return;
+          const ratio = contrast(p["fg-on-accent"], p[bg]);
+          rows.push({
+            theme,
+            pair: `fg-on-accent on ${bg}`,
+            fg: p["fg-on-accent"],
+            bg: p[bg],
+            ratio,
+            recommended: true,
+          });
+        });
+        // AAA 代替アクセント (accent-aaa) がある場合の比較 (text on accent-aaa / fg-on-accent on accent-aaa)
+        accentAAAComparisons.forEach((aaa) => {
+          if (!(aaa in p)) return;
+          // text on accent-aaa
+          const ratio1 = contrast(p.text, p[aaa]);
+          rows.push({
+            theme,
+            pair: `text on ${aaa}`,
+            fg: p.text,
+            bg: p[aaa],
+            ratio: ratio1,
+            experimental: true,
+          });
+          if ("fg-on-accent" in p) {
+            const ratio2 = contrast(p["fg-on-accent"], p[aaa]);
+            rows.push({
+              theme,
+              pair: `fg-on-accent on ${aaa}`,
+              fg: p["fg-on-accent"],
+              bg: p[aaa],
+              ratio: ratio2,
+              experimental: true,
+            });
+          }
+        });
+        return rows;
+      }
+      let palettesCache = null;
+      let data = [];
+      function render() {
+        const tbody = document.querySelector("#report tbody");
+        tbody.innerHTML = "";
+        if (!data.length) {
+          tbody.innerHTML = '<tr><td colspan="6">読み込み中...</td></tr>';
+          return;
+        }
+        let rows = [...data];
+        const filter = document.getElementById("filter").value;
+        rows.forEach((r) => (r.meta = classify(r.ratio)));
+        if (filter === "fail")
+          rows = rows.filter((r) => r.meta.label === "Fail");
+        if (filter === "aa-miss") rows = rows.filter((r) => r.ratio < 4.5);
+        if (filter === "aa-pass")
+          rows = rows.filter((r) => ["AA", "AAA"].includes(r.meta.label));
+        if (filter === "aaa") rows = rows.filter((r) => r.meta.label === "AAA");
+        rows.forEach((r) => {
+          const tr = document.createElement("tr");
+          tr.className = r.meta.cls;
+          const note = r.inverse
+            ? " <span class=muted>(inverse)</span>"
+            : r.recommended
+            ? " <span class=muted>(recommended)</span>"
+            : r.experimental
+            ? " <span class=muted>(AAA test)</span>"
+            : "";
+          tr.innerHTML = `<td>${r.theme}</td><td>${
+            r.pair
+          }${note}</td><td><span class=swatch style="background:${
+            r.fg
+          }"></span>${r.fg}</td><td><span class=swatch style="background:${
+            r.bg
+          }"></span>${r.bg}</td><td class=ratio>${r.ratio.toFixed(
+            2
+          )}</td><td><span class="tag ${r.meta.label}">${
+            r.meta.label
+          }</span></td>`;
+          tbody.appendChild(tr);
+        });
+      }
+      async function recalc() {
+        palettesCache = await buildPalettes();
+        data = [
+          ...buildRows("light", palettesCache),
+          ...buildRows("dark", palettesCache),
+        ];
+        render();
+      }
+      recalc();
+      document.getElementById("filter").addEventListener("change", render);
+      document.getElementById("sort-worst").addEventListener("click", () => {
+        data.sort((a, b) => a.ratio - b.ratio);
+        render();
+      });
+      document.getElementById("sort-best").addEventListener("click", () => {
+        data.sort((a, b) => b.ratio - a.ratio);
+        render();
+      });
+      document.getElementById("recalc").addEventListener("click", recalc);
+      document.getElementById("toggle-theme").addEventListener("click", () => {
+        const html = document.documentElement;
+        const next =
+          html.getAttribute("data-theme") === "light" ? "dark" : "light";
+        html.setAttribute("data-theme", next);
+        document.getElementById("theme-indicator").textContent = `(${next})`;
+      });
+    </script>
+  </body>
+</html>
