@@ -327,6 +327,18 @@ header {
   transition: opacity 0.5s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Override: メニュー項目のホバー/フォーカス時、共通 a:hover の下線を抑制しアニメーションラインのみ表示 */
+.menu > li > a:hover,
+.menu > li > a:focus {
+  text-decoration: none;
+}
+/* キーボード操作時の視認性 (focus-visible) */
+.menu > li > a:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  text-decoration: none;
+}
+
 .dropdown-menu {
   display: none;
   position: absolute;
@@ -366,6 +378,12 @@ header {
 .dropdown-menu a:hover {
   background: transparent;
   color: var(--color-accent-alt);
+}
+/* 下線は共通 a:hover から継承させない */
+.dropdown-menu a:hover,
+.dropdown-menu a:focus,
+.dropdown-menu a:focus-visible {
+  text-decoration: none;
 }
 /* PC幅のみ hover で子メニュー表示 */
 @media (min-width: 769px) {
