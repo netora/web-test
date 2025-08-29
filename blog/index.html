@@ -2,22 +2,16 @@
 <html lang="ja">
   <head>
     <link
-      href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,400&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
       rel="stylesheet"
     />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hello,idea - TOP</title>
-    <link rel="stylesheet" href="sanitize.css" />
-    <link rel="stylesheet" href="style.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
+    <title>hello,idea - BLOG</title>
+    <link rel="stylesheet" href="../sanitize.css" />
+    <link rel="stylesheet" href="../style.css" />
+    <script src="../darkmode.js"></script>
+    <script src="../mobile-menu.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
       rel="stylesheet"
@@ -27,8 +21,6 @@
       href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
       rel="stylesheet"
     />
-    <script src="darkmode.js" defer></script>
-    <script src="mobile-menu.js"></script>
   </head>
   <body>
     <header class="site-header">
@@ -50,7 +42,7 @@
         aria-label="ダークモード切替"
         title="テーマ切替"
       >
-        <!-- 太陽アイコン（ライトモード用） -->
+        <!-- 太陽アイコン（ライトモード→ダーク用） -->
         <svg
           id="icon-sun"
           xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +68,7 @@
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
         </svg>
-        <!-- 月アイコン（ダークモード用） -->
+        <!-- 月アイコン（ダークモード→ライト用） -->
         <svg
           id="icon-moon"
           xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +86,7 @@
           <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />
         </svg>
       </button>
-      <h1><a href="index.html">hello,idea</a></h1>
+      <h1><a href="../index.html">hello,idea</a></h1>
       <nav id="main-nav" class="main-nav">
         <button
           id="menu-close-btn"
@@ -102,12 +94,12 @@
           aria-label="メニューを閉じる"
         ></button>
         <ul class="menu">
-          <li><a href="index.html">TOP</a></li>
-          <li><a href="about.html">ABOUT</a></li>
+          <li><a href="../index.html">TOP</a></li>
+          <li><a href="../about.html">ABOUT</a></li>
           <li class="dropdown">
-            <a href="blog/posts.html">BLOG</a>
+            <a href="index.html">BLOG</a>
             <ul class="dropdown-menu">
-              <li><a href="blog/posts.html">POSTS</a></li>
+              <li><a href="posts.html">POSTS</a></li>
               <li><a href="#">TAGS</a></li>
             </ul>
           </li>
@@ -116,13 +108,8 @@
     </header>
     <main class="container">
       <section class="hero">
-        <h2>hello,world</h2>
-        <p>
-          はじめまして、netora.blackです。<br />
-          2006年ごろからパソコンにハマり、好きなことを気ままにやってます。<br />
-          このサイトでは日常のこととか、ゲームやPCの話をゆる～く書いていきます。<br />
-          サイト運営も手探りだけど、気軽にのぞいてもらえたら嬉しいです。
-        </p>
+        <h2>ブログ記事一覧</h2>
+        <p>記事はまだありません。</p>
       </section>
     </main>
     <footer class="site-footer">
