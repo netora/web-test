@@ -2,7 +2,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   const hamburgerBtn = document.getElementById("hamburger-btn");
   const mainNav = document.getElementById("main-nav");
-  const closeSymbol = document.querySelector("#menu-close-btn .close-symbol");
+  // メニュークローズボタン（×）
+  const closeBtn = document.getElementById("menu-close-btn");
 
   // ARIA 初期設定
   if (hamburgerBtn && mainNav) {
@@ -201,19 +202,33 @@ document.addEventListener("DOMContentLoaded", function () {
     mainNav.classList.toggle("show", opening);
     hamburgerBtn.setAttribute("aria-expanded", opening ? "true" : "false");
     mainNav.setAttribute("aria-hidden", opening ? "false" : "true");
+    // メニュー展開中はハンバーガーボタンを隠す (重複X回避)
+    if (opening) {
+      hamburgerBtn.style.visibility = "hidden";
+      hamburgerBtn.style.opacity = "0";
+      hamburgerBtn.setAttribute("aria-hidden", "true");
+    } else {
+      hamburgerBtn.style.visibility = "visible";
+      hamburgerBtn.style.opacity = "1";
+      hamburgerBtn.removeAttribute("aria-hidden");
+    }
     if (!opening && typeof resetDropdowns === "function") resetDropdowns();
   });
 
-  // ×印クリックでメニューを閉じる
-  if (closeSymbol) {
-    closeSymbol.style.cursor = "pointer";
-    closeSymbol.addEventListener("click", function (e) {
+  // ×ボタンクリックでメニューを閉じる
+  if (closeBtn) {
+    closeBtn.addEventListener("click", function (e) {
       e.stopPropagation();
       mainNav.classList.remove("show");
       hamburgerBtn.classList.remove("active");
       hamburgerBtn.setAttribute("aria-expanded", "false");
       mainNav.setAttribute("aria-hidden", "true");
       if (typeof resetDropdowns === "function") resetDropdowns();
+      // フォーカスをハンバーガーボタンに戻して操作継続性を確保
+      hamburgerBtn.focus();
+      hamburgerBtn.style.visibility = "visible";
+      hamburgerBtn.style.opacity = "1";
+      hamburgerBtn.removeAttribute("aria-hidden");
     });
   }
 
@@ -262,6 +277,9 @@ document.addEventListener("DOMContentLoaded", function () {
       hamburgerBtn.setAttribute("aria-expanded", "false");
       mainNav.setAttribute("aria-hidden", "true");
       resetDropdowns();
+      hamburgerBtn.style.visibility = "visible";
+      hamburgerBtn.style.opacity = "1";
+      hamburgerBtn.removeAttribute("aria-hidden");
     }
   });
 
@@ -273,6 +291,9 @@ document.addEventListener("DOMContentLoaded", function () {
       hamburgerBtn.setAttribute("aria-expanded", "false");
       mainNav.setAttribute("aria-hidden", "true");
       resetDropdowns();
+      hamburgerBtn.style.visibility = "visible";
+      hamburgerBtn.style.opacity = "1";
+      hamburgerBtn.removeAttribute("aria-hidden");
     }
   });
 
@@ -284,6 +305,9 @@ document.addEventListener("DOMContentLoaded", function () {
       hamburgerBtn.setAttribute("aria-expanded", "false");
       mainNav.setAttribute("aria-hidden", "true");
       resetDropdowns();
+      hamburgerBtn.style.visibility = "visible";
+      hamburgerBtn.style.opacity = "1";
+      hamburgerBtn.removeAttribute("aria-hidden");
     }
   });
 
